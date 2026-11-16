@@ -32,9 +32,9 @@ Fixes #<same-repository issue number>
 
 ## Architecture impact
 
-<!-- A change that crosses component boundaries, changes which components are part of the supported platform, or changes or deprecates a public interface needs a Technical Steering Committee decision before merge. See https://www.embeddedos.org/contribute/#architecture-review -->
+<!-- A change that crosses component boundaries, changes which components are part of the supported platform, changes or deprecates a public interface, or changes the scope or timing of a release needs a Technical Steering Committee decision before merge. See https://www.embeddedos.org/contribute/#architecture-review -->
 
-- [ ] None. The change stays inside one component and changes no public interface.
+- [ ] None. The change stays inside one component, changes no public interface, and does not change the scope or timing of a release.
 - [ ] Architecture review needed. RFC discussion: <link>. TSC decision: <link>.
 
 ## Validation

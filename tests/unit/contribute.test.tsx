@@ -40,20 +40,23 @@ import {
 import { STACK } from "../../client/src/data/stack";
 
 const root = path.resolve(__dirname, "../..");
-const githubTemplate = readFileSync(
-  path.join(root, ".github/PULL_REQUEST_TEMPLATE.md"),
-  "utf8"
+// A checkout with core.autocrlf gives the file CRLF endings; the copy in
+// contribute.ts is a template literal and always has LF. Compare the text.
+const toLF = (s: string) => s.replace(/\r\n/g, "\n");
+const githubTemplate = toLF(
+  readFileSync(path.join(root, ".github/PULL_REQUEST_TEMPLATE.md"), "utf8")
 );
 
 afterEach(cleanup);
 
 describe("PR template", () => {
   it("is identical to .github/PULL_REQUEST_TEMPLATE.md", () => {
-    expect(PR_TEMPLATE).toBe(githubTemplate);
+    expect(toLF(PR_TEMPLATE)).toBe(githubTemplate);
   });
 
   it("asks for architecture impact and points at the review section", () => {
     expect(githubTemplate).toContain("## Architecture impact");
+    expect(githubTemplate).toContain("scope or timing of a release");
     expect(githubTemplate).toContain(
       "https://www.embeddedos.org/contribute/#architecture-review"
     );
@@ -101,6 +104,12 @@ describe("package entries", () => {
     expect(contributeHref("eBoot")).toBe("/contribute#pkg-eboot");
   });
 
+  it("refuses to build a link to a package with no entry on the page", () => {
+    expect(() => contributeHref("eVera")).toThrow(/no entry/);
+    expect(() => contributeHref("www.embeddedos.org")).toThrow(/no entry/);
+    expect(() => contributeHref("eBot")).toThrow(/no entry/);
+  });
+
   it("gives every package a unique anchor", () => {
     const anchors = CONTRIBUTE_PACKAGES.map(p => p.anchor);
     expect(new Set(anchors).size).toBe(anchors.length);
@@ -119,7 +128,8 @@ describe("package entries", () => {
     const listed = CONTRIBUTE_PACKAGES.map(p => p.name);
     expect(listed).not.toContain("www.embeddedos.org");
     expect(listed).not.toContain("eVera");
-    expect(listed.length).toBe(STACK.projects.length - 2);
+    expect(listed).toContain("eos-health");
+    expect(listed.length).toBe(STACK.projects.length - 2 + 1);
     for (const p of CONTRIBUTE_PACKAGES) {
       expect(p.repoUrl).toMatch(/^https:\/\/github\.com\/embeddedos-org\//);
       expect(p.area, p.name).toBeTruthy();

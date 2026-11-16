@@ -43,25 +43,59 @@ export function packageAnchor(name: string): string {
 }
 
 /**
+ * Public repositories that are not in `STACK.projects` but take
+ * contributions. `STACK.projects` mirrors `docs/ecosystem-graph.json`, which
+ * leaves device product lines out pending a maintainer decision (D-12 in
+ * `docs/maintainer-decisions.md`), so they are listed here instead of being
+ * added to the stack data and its totals. `eos-aero` is not listed: it has no
+ * licence, so there are no terms under which to accept a contribution.
+ */
+const EXTRA_PUBLIC_PACKAGES = [
+  {
+    name: "eos-health",
+    repo: "embeddedos-org/eos-health",
+    area: STACK.tiers["3"],
+  },
+];
+
+/** The public packages, in `STACK.projects` order then the extras, with where to contribute. */
+export const CONTRIBUTE_PACKAGES = [
+  ...STACK.projects
+    .filter(p => !PRIVATE_REPOS.has(p.repo))
+    .map(p => ({
+      name: p.name,
+      repo: p.repo,
+      area: STACK.tiers[String(p.tier) as keyof typeof STACK.tiers],
+    })),
+  ...EXTRA_PUBLIC_PACKAGES,
+].map(p => ({
+  name: p.name,
+  area: p.area,
+  anchor: packageAnchor(p.name),
+  repoUrl: `https://github.com/${p.repo}`,
+}));
+
+const LISTED_NAMES = new Set(CONTRIBUTE_PACKAGES.map(p => p.name));
+
+/**
  * Where to send a reader who wants to contribute to one package.
  *
- * @param name - The package name as written in `STACK.projects`.
+ * Throws for a name with no entry on `/contribute` (a typo, an unlisted
+ * repository, or a private one such as eVera) so the mistake fails the build
+ * or the test run instead of shipping a link to a fragment that does not
+ * exist.
+ *
+ * @param name - The package name as listed in `CONTRIBUTE_PACKAGES`.
  * @returns The package's entry on `/contribute`.
  * @example contributeHref("eBoot") // "/contribute#pkg-eboot"
  */
 export function contributeHref(name: string): string {
+  if (!LISTED_NAMES.has(name))
+    throw new Error(
+      `contributeHref: "${name}" has no entry on ${CONTRIBUTE_PATH}. Use a name from CONTRIBUTE_PACKAGES.`
+    );
   return `${CONTRIBUTE_PATH}#${packageAnchor(name)}`;
 }
-
-/** The public packages, in `STACK.projects` order, with where to contribute. */
-export const CONTRIBUTE_PACKAGES = STACK.projects
-  .filter(p => !PRIVATE_REPOS.has(p.repo))
-  .map(p => ({
-    name: p.name,
-    area: STACK.tiers[String(p.tier) as keyof typeof STACK.tiers],
-    anchor: packageAnchor(p.name),
-    repoUrl: `https://github.com/${p.repo}`,
-  }));
 
 /**
  * What needs a Technical Steering Committee decision before merge. These are
@@ -71,6 +105,7 @@ export const ARCHITECTURE_REVIEW_TRIGGERS = [
   "The change crosses component boundaries, for example a new interface between eBoot and the kernel.",
   "The change adds a component to, or removes one from, the supported platform.",
   "The change alters or deprecates a public interface that other components or users depend on.",
+  "The change alters the scope or timing of a release.",
 ];
 
 /** How a topic reaches the TSC, in order. */
@@ -176,9 +211,9 @@ Fixes #<same-repository issue number>
 
 ## Architecture impact
 
-<!-- A change that crosses component boundaries, changes which components are part of the supported platform, or changes or deprecates a public interface needs a Technical Steering Committee decision before merge. See https://www.embeddedos.org/contribute/#architecture-review -->
+<!-- A change that crosses component boundaries, changes which components are part of the supported platform, changes or deprecates a public interface, or changes the scope or timing of a release needs a Technical Steering Committee decision before merge. See https://www.embeddedos.org/contribute/#architecture-review -->
 
-- [ ] None. The change stays inside one component and changes no public interface.
+- [ ] None. The change stays inside one component, changes no public interface, and does not change the scope or timing of a release.
 - [ ] Architecture review needed. RFC discussion: <link>. TSC decision: <link>.
 
 ## Validation
