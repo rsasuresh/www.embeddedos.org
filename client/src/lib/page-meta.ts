@@ -37,16 +37,16 @@ export const ORIGIN = "https://www.embeddedos.org";
 /**
  * Per-route title overrides. Consulted before the heading-derived title.
  *
- * The homepage's h1 ("Open-source embedded systems for intelligent physical
- * devices") truncates mid-phrase under the 70-char budget, dropping the key
- * noun "devices" — see F-05. An explicit override keeps the indexed title
- * short, complete and honest. Every value must stay ≤ 60 characters.
+ * The homepage's h1 ("EmbeddedOS Open Source for Physical AI") is a brand
+ * line, not a descriptive title — see F-05. An explicit override keeps the
+ * indexed title short, complete and honest. Every value must stay ≤ 60
+ * characters.
  *
  * Mirrored in scripts/prerender.mjs (TITLE_OVERRIDES); the two tables must
  * stay identical — tests/unit/page-meta.test.ts enforces it.
  */
 export const TITLE_OVERRIDES: Record<string, string> = {
-  "/": "Open-source embedded OS for every device | EmbeddedOS",
+  "/": "EmbeddedOS: Open Source for Physical AI",
 };
 
 /**
