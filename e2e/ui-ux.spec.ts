@@ -324,8 +324,9 @@ test.describe("responsive layout", () => {
         };
       });
       expect(result, `no bottom bar at ${width}px`).not.toBeNull();
-      // 2 licence links + 4 registration items + 5 policy links + the year.
-      expect(result!.count, `items at ${width}px`).toBe(12);
+      // 2 licence links + 5 registration items (status, EIN, UEI, D-U-N-S,
+      // NSF account) + 5 policy links + the year.
+      expect(result!.count, `items at ${width}px`).toBe(13);
       expect(result!.year, "the year is its own item").toBe("© 2018–2026");
       if (width >= 390)
         expect(result!.nameLines, `legal name lines at ${width}px`).toBe(1);

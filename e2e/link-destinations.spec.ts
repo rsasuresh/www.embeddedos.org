@@ -86,11 +86,13 @@ for (const [route, hrefs] of ROUTES) {
   }) => {
     test.setTimeout(30_000 + hrefs.length * 12_000);
 
-    await page
-      .context()
-      .addInitScript(() =>
-        localStorage.setItem("eos-donate-dismissed", String(Date.now()))
-      );
+    // Both floating cards are fixed over the page and cover links beneath
+    // them: dismiss the donate banner and collapse the "Ask your AI" card
+    // (AskYourAI.tsx, open by default from 640 px), as a visitor would.
+    await page.context().addInitScript(() => {
+      localStorage.setItem("eos-donate-dismissed", String(Date.now()));
+      localStorage.setItem("eos-ask-ai-collapsed", "1");
+    });
 
     const wrongDestination: string[] = [];
     const openedScrolled: string[] = [];
