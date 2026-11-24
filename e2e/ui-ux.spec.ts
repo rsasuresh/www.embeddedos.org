@@ -825,7 +825,9 @@ test.describe("design system", () => {
     await page.waitForTimeout(400);
 
     const measured = await page.evaluate(() => {
-      const p = document.querySelector("#hero-heading ~ p");
+      // The lead paragraph, not the first <p>: the one-line .bk-sub tagline
+      // now sits between the headline and the body copy.
+      const p = document.querySelector("#hero-heading ~ p.bk-lead");
       if (!p) return null;
       const fontSize = parseFloat(getComputedStyle(p).fontSize);
       return {
