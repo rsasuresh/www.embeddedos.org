@@ -33,7 +33,9 @@
  * listed in ALLOWLIST with the evidence for keeping them, and are skipped by
  * the automated check rather than failed. (The old site's nightly link
  * checker flagged the Facebook page the same way for months — that is
- * bot-blocking, not a dead page.)
+ * bot-blocking, not a dead page.) An entry matches the URL exactly unless it
+ * sets `prefix`, which covers a destination the site deep-links with a
+ * generated query string.
  *
  * Absolute links back to www.embeddedos.org are checked too, but without
  * network: they must name a route the prerender actually emitted.
@@ -51,7 +53,7 @@ const SITE_ORIGIN = "https://www.embeddedos.org";
  * Review this list when a destination changes hands; do not extend it for
  * links that are merely slow.
  */
-const ALLOWLIST: { url: string; reason: string }[] = [
+const ALLOWLIST: { url: string; prefix?: boolean; reason: string }[] = [
   {
     url: "https://www.facebook.com/profile.php?id=61588978691494",
     reason:
@@ -80,6 +82,20 @@ const ALLOWLIST: { url: string; reason: string }[] = [
       "'embedded-operating-systems-research-foundation', recent posts from " +
       "'Embedded Operating Systems Research Foundation'), verified live " +
       "2026-09-19.",
+  },
+  {
+    url: "https://www.perplexity.ai/search/new?q=",
+    prefix: true,
+    reason:
+      "Perplexity serves HTTP 403 to unauthenticated bot traffic on every " +
+      "path, including its own homepage (verified 2026-11-24 with a browser " +
+      "User-Agent: https://www.perplexity.ai/ -> 403). The 'Ask your AI' " +
+      "tiles in client/src/components/AskYourAI.tsx deep-link a search with " +
+      "ASK_AI_PROMPT in the query string, so the full URL changes whenever " +
+      "that prompt is reworded. Matching the /search/new?q= prefix keeps the " +
+      "entry valid across rewordings instead of freezing one prompt. This is " +
+      "the only prefix entry; the other three tiles (Claude, ChatGPT and " +
+      "Google AI Mode) answer normally and stay checked.",
   },
 ];
 
@@ -115,7 +131,13 @@ function knownRoutes(): Set<string> {
 
 const URLS = externalUrls();
 const ROUTES = knownRoutes();
-const ALLOWED = new Set(ALLOWLIST.map(a => a.url));
+/**
+ * Whether a URL is allowlisted. Entries match the URL exactly unless they set
+ * `prefix`, which exists for destinations whose link carries a query string
+ * the site generates (see the Perplexity entry above).
+ */
+const isAllowed = (url: string) =>
+  ALLOWLIST.some(a => (a.prefix ? url.startsWith(a.url) : url === a.url));
 
 const USER_AGENT =
   "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36";
@@ -138,7 +160,7 @@ test("every outbound link resolves to a live destination", async () => {
 });
 
 async function checkOutbound() {
-  const checked = URLS.filter(u => !ALLOWED.has(u));
+  const checked = URLS.filter(u => !isAllowed(u));
   expect(checked.length).toBeGreaterThan(50);
 
   const failures: string[] = [];
