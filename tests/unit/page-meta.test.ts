@@ -109,12 +109,14 @@ describe("per-route metadata overrides stay in lockstep", () => {
   it("applies the homepage title override in both implementations", () => {
     const rendered = applyMeta(SHELL, {
       route: "/",
-      heading: "Open-source embedded systems for intelligent physical devices",
+      heading: "EmbeddedOS Open Source for Physical AI",
       description: "x".repeat(120) + ".",
     });
     expect(titleFrom(rendered)).toBe(TITLE_OVERRIDES["/"]);
     expect(buildTitle("whatever heading", "/")).toBe(TITLE_OVERRIDES["/"]);
-    expect(TITLE_OVERRIDES["/"]).toContain("device");
+    expect(TITLE_OVERRIDES["/"]).toBe(
+      "EmbeddedOS: Open Source for Physical AI"
+    );
   });
 
   it("applies the same description overrides in both implementations", () => {

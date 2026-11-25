@@ -81,11 +81,10 @@ describe("architecture truth model", () => {
 describe("narrative hierarchy", () => {
   it("puts the primary Home positioning before its support and campaign", () => {
     const home = compact(HOME_SOURCE);
-    const heading =
-      "Open-source embedded systems for intelligent physical devices";
+    const heading = "EmbeddedOS Open Source for Physical AI";
     const support =
-      "From open hardware and secure boot to a real-time OS, developer tools, and on-device AI.";
-    const campaign = "Open infrastructure for physical AI.";
+      "An open-source foundation for the next generation of intelligent physical devices.";
+    const campaign = "{EAI_EDGE_PROFILE.maturity}";
 
     expect(home).toContain(`<h1 id="hero-heading"`);
     // the heading is set on two lines (two spans); its text is what counts

@@ -26,7 +26,16 @@ export const STACK = {
     // 2026-09-18 — the field feeds "open-source repos" copy, so it must stay
     // the public count, not the total.
     repositories: 23,
-    projects: 21,
+    // The curated stack, not the public-repo count. Two entries were removed
+    // 2026-11-24 because the repositories they linked to do not exist:
+    // embeddedos-org/HEALTH-BAND-Neuro and embeddedos-org/HealthKey-Ulta both
+    // answer 404, and neither appears in the live org API listing. The site
+    // already treated both as dead — e2e/regression.spec.ts bans them from
+    // /, /projects, /patents, /downloads, /resources and /contact — but they
+    // stayed in this list and so kept leaking onto the stack and product
+    // pages, where test:links:external caught them. Same reason the phantom
+    // eos-stack-manifest entry went on 2026-09-18.
+    projects: 19,
     boards: 83,
     architectures: 55,
     families: 75,
@@ -257,25 +266,6 @@ export const STACK = {
       platform: "firmware",
       language: "C",
       description: "Neural Interface Adapter",
-    },
-    {
-      name: "HEALTH-BAND-Neuro",
-      repo: "embeddedos-org/HEALTH-BAND-Neuro",
-      tier: 3,
-      type: "firmware",
-      platform: "firmware",
-      language: "C",
-      description:
-        "14-channel EEG, sEMG gesture recognition, TENS therapy wearable.",
-    },
-    {
-      name: "HealthKey-Ulta",
-      repo: "embeddedos-org/HealthKey-Ulta",
-      tier: 3,
-      type: "mobile",
-      platform: "mobile",
-      language: "TypeScript",
-      description: "Health monitoring and wellness app for EoS wearables.",
     },
     {
       name: "eOffice",

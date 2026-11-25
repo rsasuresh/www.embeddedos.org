@@ -309,19 +309,49 @@
 .bk-s0 h1 span.h1a {
   color: inherit;
 }
+.bk-s0 h1 span:not(.h1a) {
+  color: var(--fg);
+  font-size: 0.56em;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  margin-top: 0.16em;
+}
 /* phones: two unbroken lines would need a 20-24px headline; it keeps the display scale and wraps instead */
 @media (max-width: 520px) {
   .bk-s0 h1 {
     font-size: 34px;
+  }
+  .bk-s0 h1 span:not(.h1a) {
+    font-size: 0.64em;
   }
   .bk-s0 h1 span {
     white-space: normal;
     text-wrap: balance;
   }
 }
+.bk-s0 .bk-sub {
+  margin: 16px auto 0;
+  font-size: clamp(17px, 1.7vw, 24px);
+  letter-spacing: -0.01em;
+  color: var(--fg2);
+}
+.bk-s0 .bk-sub::after {
+  content: "";
+  display: block;
+  width: min(560px, 70%);
+  height: 1px;
+  margin: 26px auto 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.22),
+    transparent
+  );
+}
 .bk-s0 .bk-lead {
-  margin: 20px auto 0;
+  margin: 22px auto 0;
   max-width: 42em;
+  color: var(--fg3);
 }
 .bk-tag {
   margin: 14px auto 0;

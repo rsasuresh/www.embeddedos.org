@@ -349,7 +349,7 @@ export const escapeAttr = s =>
  * rework dropped these tables while keeping the references in applyMeta.)
  */
 export const TITLE_OVERRIDES = {
-  "/": "Open-source embedded OS for every device | EmbeddedOS",
+  "/": "EmbeddedOS: Open Source for Physical AI",
 };
 
 /**

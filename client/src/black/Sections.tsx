@@ -36,15 +36,15 @@ export function StoryHero() {
         >
           <div className="bk-wrap">
             <h1 id="hero-heading">
-              <span className="h1a">Open-source embedded systems</span>{" "}
-              <span>for intelligent physical devices</span>
+              <span className="h1a">EmbeddedOS</span>{" "}
+              <span>Open Source for Physical AI</span>
             </h1>
+            <p className="bk-sub">For Intelligent Embedded Systems</p>
             <p className="bk-lead">
-              From open hardware and secure boot to a real-time OS, developer
-              tools, and on-device AI.
+              An open-source foundation for the next generation of intelligent
+              physical devices.
             </p>
             <p className="bk-tag">
-              <b>Open infrastructure for physical AI.</b>{" "}
               <span>
                 {EAI_EDGE_PROFILE.maturity}: {EAI_EDGE_PROFILE.name} ={" "}
                 {EAI_EDGE_PROFILE.sequence.join(" → ")}
